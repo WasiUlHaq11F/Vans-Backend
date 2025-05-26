@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "prisma/prisma.service";
 import { v4 as uuidv4 } from "uuid";
-
+import { StoreTypes } from "types/StoreTypes";
 @Injectable()
 export class StoreService{
     constructor(private  prisma:PrismaService){}
 
-    async createStore(storeData:any){
+    async createStore(storeData:StoreTypes){
         const {name,description,userId} = storeData
 
         const existingStore = await this.prisma.store.findFirst({
@@ -44,4 +44,17 @@ export class StoreService{
             },
         })
     }
+
+    async updateStore(storeId: string, updateData: { name?: string; description?: string }) {
+        return this.prisma.store.update({
+          where: { id: storeId },
+          data: updateData,
+        });
+      }
+
+      async deleteStore(storeId: string) {
+        return this.prisma.store.delete({
+          where: { id: storeId },
+        });
+      }
 }

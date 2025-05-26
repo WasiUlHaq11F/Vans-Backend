@@ -1,16 +1,14 @@
-import { Controller,Post,Body,Get, Param } from "@nestjs/common";
+import { Controller,Post,Body,Get, Param, Patch, Delete } from "@nestjs/common";
 import { StoreService } from "./store.service";
+import { StoreTypes } from "types/StoreTypes";
 @Controller('stores')
 export class StoreController{
     constructor(private readonly storeService: StoreService) {}
 
-    @Get()
-    async getAllStores() {
-      return this.storeService.getAllStores();
-    }
+  
 
     @Post()
-    async createStore(@Body() storeData:any){
+    async createStore(@Body() storeData:StoreTypes){
         return this.storeService.createStore(storeData);
     }
 
@@ -18,4 +16,18 @@ export class StoreController{
     async getStoresByUser(@Param('userId') userId:string){
       return this.storeService.getStoresByUser(userId)
     }
+
+    @Patch(':storeId')
+  async updateStore(
+    @Param('storeId') storeId: string,
+    @Body() updateData: { name?: string; description?: string },
+  ) {
+    return this.storeService.updateStore(storeId, updateData);
+  }
+
+  // ✅ Add this
+  @Delete(':storeId')
+  async deleteStore(@Param('storeId') storeId: string) {
+    return this.storeService.deleteStore(storeId);
+  }
 }

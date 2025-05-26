@@ -1,5 +1,5 @@
 // src/product/product.controller.ts
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/product.do';
 import { Prisma } from '@prisma/client';
@@ -29,5 +29,18 @@ export class ProductController {
   @Get('products/all')
   async findAll() {
     return this.productService.getAllProducts();
+  }
+
+  @Delete('products/:productId')
+  async deleteProduct(@Param('productId') productId: string) {
+    return this.productService.deleteProduct(productId);
+  }
+
+  @Patch('products/:productId')
+  async updateProduct(
+    @Param('productId') productId: string,
+    @Body() data: Partial<Prisma.ProductUpdateInput>,
+  ) {
+    return this.productService.updateProduct(productId, data);
   }
 }

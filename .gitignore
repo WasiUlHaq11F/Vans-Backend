@@ -34,3 +34,5 @@ coverage/
 
 # Optional: Mac system files
 *.DS_Store
+
+.next/

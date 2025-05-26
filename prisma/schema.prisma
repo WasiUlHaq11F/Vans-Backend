@@ -52,7 +52,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   stores        Store[]
-  orders        Order[]
+  orders        Order[]    // Relation to Order model
+  carts         Cart[]     // Relation to Cart model
 }
 
 model Product {
@@ -69,6 +70,7 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   orderItems  OrderItem[]
+  cartItems   CartItem[] // Relation to CartItem model
 
   @@index([storeId, categoryId, name, slug])
 }
@@ -126,4 +128,28 @@ model Category {
   slug     String    @id
   name     String
   products Product[]
+}
+
+
+model Cart {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([userId]) // Each user has only one cart
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId]) // Prevent same product from being added twice
 }
